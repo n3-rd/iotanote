@@ -29,10 +29,12 @@
 @click="inputDialog = true"
  icon="create"></q-btn>
 
+<!-- <div v-for="notes in noteList" :key="notes.age">
+<div>{{notes.name}}</div> <button @click="deleteNote(notes)">delete note</button>
+</div> -->
 
 
-
- <q-list>
+<q-list>
    <div v-for="notes in noteList" :key="notes.age">
       <q-item>
         <q-item-section>
@@ -51,8 +53,6 @@
    </div>
 
  </q-list>
-
-
 
   </q-page>
 </template>
@@ -86,13 +86,16 @@ this.noteList.push(
 )
 this.storeNewNote()
 this.clearInputText()
-this.updateNotes()
+
+// this.logStored()
    },
 
 deleteNote: function(deletedNote){
   console.log(this.noteList.indexOf(deletedNote))
   var noteDeleteRange = this.noteList.indexOf(deletedNote)
   this.noteList.splice(noteDeleteRange, 1)
+  this.storeNewNote()
+  this.updateNotes()
 },
 clearInputText: function(){
 this.inputText = ''
