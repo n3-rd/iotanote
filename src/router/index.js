@@ -1,6 +1,5 @@
 import Vue from 'vue'
 import VueRouter from 'vue-router'
-// import localforage from '..assets/localforage.min.js'
 import routes from './routes'
 
 Vue.use(VueRouter)
