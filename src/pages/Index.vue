@@ -50,6 +50,28 @@
             <q-item-label class="ellipsis-2-lines"
               >{{ notes.noteText }}.</q-item-label
             >
+              <q-popup-proxy>
+
+      <q-card class="bg-primary text-white fullscreen z-max">
+        <q-bar>
+          <q-space />
+
+          
+          <q-btn dense flat icon="close" v-close-popup>
+            <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          </q-btn>
+        </q-bar>
+
+        <q-card-section>
+          <div class="text-h6">{{notes.title}}</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          {{notes.noteText}}
+        </q-card-section>
+      </q-card>
+ 
+        </q-popup-proxy>
           </q-item-section>
 
           <q-item-section side top>
@@ -77,6 +99,7 @@
             </span>
           </q-item-section>
         </q-item>
+      
         <q-separator spaced inset />
       </div>
     </q-list>
