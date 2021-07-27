@@ -1,6 +1,6 @@
-# Quasar App (quasart)
+# Iotanote
 
-A Quasar Framework app
+A no probs note app
 
 ## Install the dependencies
 ```bash

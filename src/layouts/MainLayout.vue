@@ -65,7 +65,7 @@ const linksData = [
     title: 'Github',
     caption: 'github.com/n3-rd',
     icon: 'code',
-    link: 'https://github.com/n3-rd'
+    link: 'https://github.com/n3-rd/iotanote'
   },
 
     {
