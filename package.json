@@ -1,8 +1,8 @@
 {
   "name": "quasart",
   "version": "0.0.1",
-  "description": "A Quasar Framework app",
-  "productName": "Quasar App",
+  "description": "A Scrappy",
+  "productName": "Iotanote",
   "author": "n3-rd <godwinjdayo@gmail.com>",
   "private": true,
   "scripts": {

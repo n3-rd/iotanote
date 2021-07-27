@@ -7,6 +7,7 @@
 // https://v1.quasar.dev/quasar-cli/quasar-conf-js
 /* eslint-env node */
 const ESLintPlugin = require('eslint-webpack-plugin')
+const fs = require('fs')
 
 module.exports = function (/* ctx */) {
   return {
@@ -72,7 +73,15 @@ module.exports = function (/* ctx */) {
 
     // Full list of options: https://v1.quasar.dev/quasar-cli/quasar-conf-js#Property%3A-devServer
     devServer: {
-      https: false,
+
+      https: false,  //set to true to work in https
+
+      // uncomment to work with PWA mode if you have mkcert installed (https://github.com/FiloSottile/mkcert)
+      // https: {
+
+      //   key: fs.readFileSync('localhost-key.pem'),
+      //   cert: fs.readFileSync('localhost.pem')
+      // },
       port: 8080,
       open: true // opens browser window automatically
     },

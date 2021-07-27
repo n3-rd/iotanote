@@ -308,7 +308,7 @@ export default {
   },
   created() {
     this.createWelcomeNote();
-    this.$q.addressbarColor.set("#a2e3fa");
+    this.$q.addressbarColor.set("#3f51b5");
   },
   updated() {
     // window.noteList = this.noteList;

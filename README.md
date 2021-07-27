@@ -11,6 +11,10 @@ npm install
 ```bash
 quasar dev
 ```
+### Start the app in PWA development mode - Make sure to check quasar.conf.js https options
+```bash
+quasar dev -m pwa
+```
 
 ### Lint the files
 ```bash
