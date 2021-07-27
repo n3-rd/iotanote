@@ -12,7 +12,7 @@
         />
 
         <q-toolbar-title>
-          ScrapNote
+          Iotanote
         </q-toolbar-title>
 
         
@@ -38,6 +38,16 @@
           v-bind="link"
         />
       </q-list>
+
+<div class="fixed-bottom-left q-pl-md">Made with 
+  <q-icon
+                name="favorite"
+                class="inline q-px-sm text-h6"
+                color="indigo"
+              />
+              by <a href="https://n3-rd.github.io">N3rd </a>
+              </div>
+
     </q-drawer>
 
     <q-page-container>
@@ -62,7 +72,7 @@ const linksData = [
     title: 'My Portfolio',
     caption: 'n3-rd.github.io',
     icon: 'public',
-    link: 'n3-rd.github.io'
+    link: 'https://n3-rd.github.io'
   },
  
 ];

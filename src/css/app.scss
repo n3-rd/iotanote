@@ -42,3 +42,11 @@
   .inline{
     display: inline!important;
   }
+  .white-space-default{
+    width: 100%;
+    white-space: pre-line;
+    hyphens: none;
+  }
+  .create-button{
+    z-index: 9;
+  }

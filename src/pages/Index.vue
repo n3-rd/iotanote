@@ -8,21 +8,30 @@
     <!-- <WriteDialog :alert="false"/> -->
 
     <div>
-      <q-dialog v-model="inputDialog">
+      <q-dialog
+        v-model="inputDialog"
+        transition-show="slide-up"
+        transition-hide="slide-down"
+      >
         <q-card class="dialog-card">
           <q-input
             v-model="inputText"
-            label="Input your text"
+            
             type="textarea"
             class="q-px-md q-py-sm"
             standout="text-indigo"
             filled
+            :input-style="{height: '60vh!important' }"
+            @keyup.enter.shift="pushNote(inputText)"
           />
-
+          <div class="desktop-only q-pl-md">
+            use <code class="bg-grey-12">Shift + Enter</code> to make entry
+          </div>
           <!-- <q-card-actions align="right"> -->
           <q-btn
             flat
-            label="OK"
+            label="Create Note"
+            text-color="grey-1"
             class="input-text-button bg-indigo q-px-sm q-py-sm q-my-lg"
             @click="pushNote(inputText)"
             v-close-popup
@@ -33,14 +42,45 @@
     </div>
 
     <q-btn
-      class="q-btn--round bg-indigo fixed-bottom-right q-mr-lg q-mb-lg q-pa-sm"
+      class="q-btn--round bg-indigo text-grey-1 fixed-bottom-right q-mr-lg q-mb-lg q-pa-sm create-button"
       @click="inputDialog = true"
       icon="create"
     ></q-btn>
 
-    <!-- <div v-for="notes in noteList" :key="notes.age">
-<div>{{notes.name}}</div> <button @click="deleteNote(notes)">delete note</button>
-</div> -->
+    <q-dialog
+      v-model="editDialog"
+      persistent
+      maximized
+      transition-show="slide-up"
+      transition-hide="slide-down"
+    >
+      <q-card class="bg-primary text-white">
+        <q-bar>
+          <q-space />
+
+          <q-btn dense flat icon="close" v-close-popup>
+            <q-tooltip class="bg-white text-primary">Close</q-tooltip>
+          </q-btn>
+
+          <q-btn dense flat icon="check" v-close-popup @click="saveEditNote()">
+            <q-tooltip class="bg-white text-primary">Done</q-tooltip>
+          </q-btn>
+        </q-bar>
+
+        <q-card-section>
+          <div class="text-h6">Edit Note</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+          <q-input
+            v-model="tempEditNote"
+            filled
+            :input-style="{ color: '#ffffff', height: '80vh!important' }"
+            type="textarea"
+          />
+        </q-card-section>
+      </q-card>
+    </q-dialog>
 
     <q-list>
       <div v-for="notes in noteList" :key="notes.age">
@@ -50,56 +90,54 @@
             <q-item-label class="ellipsis-2-lines"
               >{{ notes.noteText }}.</q-item-label
             >
-              <q-popup-proxy>
-
-      <q-card class="bg-primary text-white fullscreen z-max">
-        <q-bar>
-          <q-space />
-
-          
-          <q-btn dense flat icon="close" v-close-popup>
-            <q-tooltip class="bg-white text-primary">Close</q-tooltip>
-          </q-btn>
-        </q-bar>
-
-        <q-card-section>
-          <div class="text-h6">{{notes.title}}</div>
-        </q-card-section>
-
-        <q-card-section class="q-pt-none">
-          {{notes.noteText}}
-        </q-card-section>
-      </q-card>
- 
-        </q-popup-proxy>
+            <q-popup-proxy
+              transition-show="slide-up"
+              transition-hide="slide-down"
+            >
+              <NotePopup :title="notes.title" :noteText="notes.noteText" />
+            </q-popup-proxy>
           </q-item-section>
 
           <q-item-section side top>
             <q-item-label caption>{{ notes.date }}</q-item-label>
             <q-item-label caption>{{ notes.time }}</q-item-label>
             <span>
-              <q-icon
-                name="content_copy"
-                class="inline q-px-sm text-h6"
-                color="blue"
-                @click="copyNoteToClipboard(notes.noteText)"
-              />
-              <q-icon
+              <!-- <q-icon
                 name="file_download"
                 class="inline q-px-sm text-h6"
                 color="green"
                 @click="downloadNote(notes.title, notes.noteText)"
+              /> -->
+              <q-icon
+                name="create"
+                class="inline q-px-sm text-h6"
+                color="indigo"
+                @click="editNote(notes)"
               />
               <q-icon
                 name="delete"
                 class="inline q-px-sm text-h6"
                 color="red"
-                @click="deleteNote(notes)"
-              />
+                
+              >
+              <q-popup-proxy>
+ <q-card>
+        <q-card-section class="row items-center">
+          <q-avatar icon="delete" color="indigo" text-color="white" />
+          <span class="q-ml-sm">Are you sure you want to delete this note?</span>
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Cancel" color="indigo" v-close-popup />
+          <q-btn flat label="Delete" color="negative" @click="deleteNote(notes)" v-close-popup />
+        </q-card-actions>
+      </q-card>
+              </q-popup-proxy>
+              </q-icon>
             </span>
           </q-item-section>
         </q-item>
-      
+
         <q-separator spaced inset />
       </div>
     </q-list>
@@ -107,19 +145,19 @@
 </template>
 
 <script>
-// import WriteDialog from 'components/WriteDialog'
-// var noteList;
 import { date } from "quasar";
-import { exportFile } from "quasar";
-import { copyToClipboard } from "quasar";
 import { uid } from "quasar";
+import NotePopup from "components/NotePopup";
 
 export default {
   name: "PageIndex",
   data() {
     return {
       inputDialog: false,
+      editDialog: false,
       inputText: "",
+      tempEditNote: "",
+      tempNoteIndex: "",
       noteList: [],
       timeStamp: Date.now(),
       dateFormats: {
@@ -174,6 +212,7 @@ export default {
   },
   components: {
     // WriteDialog
+    NotePopup
   },
   methods: {
     pushNote: function(note) {
@@ -188,7 +227,7 @@ export default {
       var today = new Date();
       var time = `${today.getHours()} : ${today.getMinutes()} ${noteTimeOfDay}`;
 
-      if (this.inputText != "") {
+      if (this.inputText != "" && this.inputText != "\n") {
         this.noteList.unshift({
           noteText: note,
           date: `${noteDay} ${noteMonth} ${noteYear}`,
@@ -202,8 +241,10 @@ export default {
         this.$q.notify({
           message: "Please write some content"
         });
-      }
+        this.clearInputText();
 
+      }
+      this.inputDialog = false;
       // this.logStored()
     },
 
@@ -217,30 +258,27 @@ export default {
         message: "Note deleted"
       });
     },
-    downloadNote: function(fileName, text) {
-      var file = exportFile(fileName, text);
-      if (file === true) {
-        this.$q.notify({
-          message: "File will start to download"
-        });
-      } else {
-        this.$q.notify({
-          message: "Error downloading file"
-        });
-      }
+    editNote: function(note) {
+      console.log(this.noteList.indexOf(note));
+      var noteIndex = this.noteList.indexOf(note);
+      console.log(this.noteList[noteIndex].noteText);
+      var tempNoteText = this.noteList[noteIndex].noteText;
+      this.editDialog = true;
+      this.tempNoteIndex = noteIndex;
+      this.tempEditNote = tempNoteText;
     },
-    copyNoteToClipboard: function(text) {
-      copyToClipboard(text)
-        .then(() => {
-          this.$q.notify({
-            message: "Text copied successfully"
-          });
-        })
-        .catch(() => {
-          this.$q.notify({
-            message: "Error while copying text"
-          });
-        });
+    saveEditNote: function() {
+      var noteIndex = this.tempNoteIndex;
+      var tempEditNote = this.tempEditNote;
+      var tempEditNoteTitle = `${this.tempEditNote.substr(0, 10)}...`;
+      this.noteList[noteIndex].noteText = tempEditNote;
+      this.noteList[noteIndex].title = tempEditNoteTitle;
+      this.storeNewNote();
+      this.updateNotes();
+      this.tempEditNote = "";
+      this.$q.notify({
+        message: "Note updated"
+      });
     },
     clearInputText: function() {
       this.inputText = "";
